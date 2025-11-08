@@ -43,7 +43,7 @@ repos:
     hooks:
       - id: terraform-test
         name: Terraform Test
-        entry: bash -c 'tofu test'
+        entry: bash -c 'terraform test'
         language: system
         pass_filenames: false
         files: \.tf$
