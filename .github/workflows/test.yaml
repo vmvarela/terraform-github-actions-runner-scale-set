@@ -5,17 +5,45 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
-    paths-ignore:
-      - '.github/**/*'
-      - '.pre-commit-config.yaml'
-      - '.releaserc.yaml'
-      - '.gitignore'
+
+env:
+  TFLINT_VERSION: 'v0.54.0'
+  TERRAFORM_VERSION: '1.11.1'
 
 jobs:
   test:
     name: Test
-    secrets: inherit
-    permissions: write-all
-    uses: vmvarela/workflows/.github/workflows/test.yaml@v0
-    with:
-      devcontainer: 'ghcr.io/vmvarela/terraform-github-repository:devcontainer'
+    runs-on: ${{ vars.CI_GITHUB_RUNNER || 'ubuntu-latest' }}
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      pull-requests: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.x'
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v6
+        with:
+          tflint_version: ${{ env.TFLINT_VERSION }}
+
+      - name: Pre-commit
+        uses: pre-commit/action@v3.0.1
