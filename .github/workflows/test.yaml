@@ -1,0 +1,21 @@
+name: Test
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+    paths-ignore:
+      - '.github/**/*'
+      - '.pre-commit-config.yaml'
+      - '.releaserc.yaml'
+      - '.gitignore'
+
+jobs:
+  test:
+    name: Test
+    secrets: inherit
+    permissions: write-all
+    uses: vmvarela/workflows/.github/workflows/test.yaml@v0
+    with:
+      devcontainer: 'ghcr.io/vmvarela/terraform-github-repository:devcontainer'

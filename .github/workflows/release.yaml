@@ -1,0 +1,12 @@
+name: Release
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    secrets: inherit
+    permissions: write-all
+    uses: vmvarela/workflows/.github/workflows/release.yaml@v0.3.0
+    with:
+      devcontainer: 'ghcr.io/vmvarela/terraform-github-repository:devcontainer'
